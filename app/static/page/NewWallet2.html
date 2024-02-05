@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Write down your Secret Recovery Phrase</title>
+    <style>
+        body {
+            position: relative;
+        }
+        .container {
+            position: relative;
+            background-color: #f2f4f6;
+            border: 1px solid #030303;
+            width: 40%;
+            margin: 0 auto;
+            margin-top: 70px;
+            border-radius: 5px;
+        }
+        h1 {
+            top: -50px;
+            position: relative;
+            font-size: 31px;
+            text-align: center;
+            margin-top: 100px;
+        }
+        p {
+            position: relative;
+            top: -20px;
+            left: 15%;
+            width: 70%;
+            font-size: 17px;
+        }
+        .tips {
+            text-align: left;
+            position: relative;
+            left: 13%;
+            margin-top: 20px;
+        }
+        .tips li {
+            margin-bottom: 10px;
+        }
+        .submit-grid {
+            position: relative;
+            left: 19%;
+            width: 3%;
+            padding: None;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            margin-top: 50px;
+            margin: 30px;
+        }
+        .submit-grid input {
+            text-align: center;
+            width: 80px;
+            font-size: 15px;
+            padding: 12px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #0d0c0c;
+            border-radius: 30px;
+        }
+        .seed-phrase {
+            margin-top: 50px;
+            font-size: 24px;
+        }
+        #copy-phrase {
+            margin-top: 20px;
+        }
+        .b1 {
+            position: absolute;
+            top: 86%;
+            left: 5%;
+            margin-right: 10px;
+            margin-left: 10px;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            color: #010000;
+            cursor: pointer;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            width: 40%;
+            max-width: 400px;
+            border-radius: 5px;
+        }
+
+        .b1:hover{
+            color: #9bc3df;
+        }
+
+        .b2 {
+            position: absolute;
+            top: 86%;
+            left: 52%;
+            margin-right: 10px;
+            margin-left: 10px;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            color: #010000;
+            cursor: pointer;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            width: 40%;
+            max-width: 400px;
+            border-radius: 5px;
+        }
+
+        .b2:hover{
+            color: #9bc3df;
+        }
+
+    
+        .b3 {
+            position: relative;
+            left: 34%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-right: 10px;
+            margin-left: 10px;
+            background-color: #0376c9;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 10px 10px;
+            text-align: center;
+            text-decoration: none;
+            width: 30%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        .b3:hover{
+            background-color: #396fce;
+        }
+
+        .b3 a{
+            text-decoration: none;
+            color: #ece1e1;
+        }
+
+        .copy-icon{
+            height: 20px;
+	margin-bottom: 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Write down!!!</h1>
+    <p>Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access.</p>
+    <ul class="tips">
+        <li>Save in a password manager</li>
+        <li>Store in a safe deposit box</li>
+        <li>Write down and store in multiple secret places</li>
+    </ul>
+    <div class="submit-grid">
+        <input type="password" id="seed-word-1" class="seed-word" name="seed-word-1" value="{{wd[0]}}">
+        <input type="password" id="seed-word-2" class="seed-word" name="seed-word-2" value="{{wd[1]}}">
+        <input type="password" id="seed-word-3" class="seed-word" name="seed-word-3" value="{{wd[2]}}">
+        <input type="password" id="seed-word-4" class="seed-word" name="seed-word-4" value="{{wd[3]}}">
+        <input type="password" id="seed-word-5" class="seed-word" name="seed-word-5" value="{{wd[4]}}">
+        <input type="password" id="seed-word-6" class="seed-word" name="seed-word-6" value="{{wd[5]}}">
+        <input type="password" id="seed-word-7" class="seed-word" name="seed-word-7" value="{{wd[6]}}">
+        <input type="password" id="seed-word-8" class="seed-word" name="seed-word-8" value="{{wd[7]}}">
+        <input type="password" id="seed-word-9" class="seed-word" name="seed-word-9" value="{{wd[8]}}">
+        <input type="password" id="seed-word-10" class="seed-word" name="seed-word-10" value="{{wd[9]}}">
+        <input type="password" id="seed-word-11" class="seed-word" name="seed-word-11" value="{{wd[10]}}">
+        <input type="password" id="seed-word-12" class="seed-word" name="seed-word-12" value="{{wd[11]}}">
+    </div>
+
+
+    <div>
+        <button type="button" id="reveal-seed-btn" class="b1">Show</button>
+        <button type="button" id="copy-btn" class="b2"><img src="./static/img/copy.svg" alt="Feature Icon" class="copy-icon">Copy</button>
+        <button type="button" id="next-btn" class="b3"><a href="/login">Begin!</a></button>
+    </div>
+
+</div>>
+</body>
+</html>
+<script>
+    // 获取DOM元素
+    const seedInputs = document.querySelectorAll(".seed-word");
+    const revealSeedBtn = document.getElementById("reveal-seed-btn");
+    const copyBtn = document.getElementById("copy-btn");
+    const nextBtn = document.getElementById("next-btn");
+
+    let seedPhraseVisible = false;
+
+    function setRandomWords() {
+            for (let i = 0; i < seedInputs.length; i++) {
+            seedInputs[i].value = seedInputs[i].value;
+        }
+    }
+
+    // 显示或隐藏助记词
+    function toggleSeedPhraseVisibility() {
+        seedPhraseVisible = !seedPhraseVisible;
+        // 直接显示或隐藏所有输入框上的文本
+        for (let i = 0; i < seedInputs.length; i++) {
+            if (seedPhraseVisible) {
+                seedInputs[i].type = "text";
+                revealSeedBtn.textContent = "Hide";
+            } else {
+                seedInputs[i].type = "password";
+                revealSeedBtn.textContent = "Show";
+            }
+        }
+    }
+
+    // 复制助记词
+    function copySeedPhrase() {
+        // 从输入框获取助记词
+        const seedPhrase = Array.from(seedInputs).map(input => input.value).join(" ");
+        // 使用Clipboard API将助记词复制到剪贴板
+        navigator.clipboard.writeText(seedPhrase)
+            .then(() => {
+                alert("Seed phrase copied to clipboard!");
+            })
+            .catch(err => {
+                console.error("Failed to copy seed phrase: ", err);
+            });
+    }
+
+    setRandomWords();
+
+    // 如果用户单击 'Reveal Seed Phrase' 按钮，则显示或隐藏助记词
+    revealSeedBtn.addEventListener("click", toggleSeedPhraseVisibility);
+    // 如果用户单击 'Copy to Clipboard' 按钮，则复制助记词到剪贴板
+    copyBtn.addEventListener("click", copySeedPhrase);
+</script>

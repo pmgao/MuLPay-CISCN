@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit</title>
+  <style>
+.transaction-edit {
+    position: absolute;
+    left: 37%;
+    top: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  height: 600px;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.account-info {
+    margin-top: 5%;
+    border-radius: 5px;
+    border-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+  display: flex;
+  width: 250px;
+  height: 50px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.account-id {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.account-number {
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #ffffff;
+}
+
+
+.balance-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.balance-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.balance-amount {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.transaction-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.currency {
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #F0F0F0;
+  border-radius: 8px;
+}
+
+.transaction-gas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100px;
+  padding: 0 24px;
+}
+
+button {
+    margin-top: 82%;
+    position: relative;
+    left: -19%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.reject-button {
+    text-decoration: none;
+    border-color: #ccc;
+  background-color: #4b84d9;
+  color: #FFFFFF;
+
+}
+
+.next-button {
+    border-color: #ccc;
+  background-color: #FFFFFF;
+  color: #4b84d9;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.total-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.total-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.total-amount {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+input {
+    box-sizing: content-box;
+    width: auto;
+    font-family: monospace;
+    color: #4b84d9;
+}
+
+
+  </style>
+</head>
+
+<div class="transaction-edit">
+    <div class="account-info">
+      <div class="account-number">
+        <p>$ target addr: </p> 
+        <input type="text" id="address-input" maxlength="22" placeholder="-> 0x">
+        <br>
+        <span id="address-error" style="color: red; display: none;">Invalid address format</span>
+      </div>
+    </div>
+    <br>
+    <div class="balance-info">
+      <div class="balance-label">Assets:</div>
+      <div class="balance-amount">1000 ETH</div>
+    </div>
+    <div class="transaction-amount">
+      <label for="amount-input">Amount:</label>
+      <div class="input-container">
+        <input type="number" id="amount-input" name="amount-input" placeholder="0.0">
+        <div class="currency">ETH</div>
+      </div>
+    </div>
+    <div class="transaction-gas">
+      <div class="label">Gas:</div>
+      <div class="input-container">
+        <input type="text" id="gas-input" placeholder="21000" readonly />
+        <span class="currency">GWEI</span>
+      </div>
+    </div>
+    <div class="total-info">
+      <div class="total-label">Total:</div>
+      <div class="total-amount">? ETH</div>
+    </div>
+    <div class="footer">
+      <button class="reject-button"><a href="/usr_state" class="reject-button">Rejection</a></button>
+      <button class="next-button" onclick="calculateTotal()">Next step</button>
+    </div>
+  </div>
+
+<script>
+function calculateTotal() {
+  const amountInput = document.getElementById("amount-input");
+  const gasInput = document.getElementById("gas-input");
+  const amount = parseFloat(amountInput.value);
+  const gas = parseFloat(gasInput.value);
+  const totalAmount = amount + (gas * 0.001);
+  const totalAmountElement = document.querySelector(".total-amount");
+  totalAmountElement.textContent = `${totalAmount.toFixed(2)} ETH`;
+  const nextButton = document.querySelector(".next-button");
+  nextButton.textContent = "*Confirm*";
+  nextButton.onclick = null;
+  nextButton.onclick = showConfirmation;
+}
+
+
+function generateRandomGas() {
+  const gasInput = document.getElementById("gas-input");
+  const randomGas = Math.floor(Math.random() * 100);
+  gasInput.value = randomGas;
+}
+
+function centerModal() {
+  const modal = document.getElementById("modal");
+  const modalHeight = modal.clientHeight;
+  const modalWidth = modal.clientWidth;
+  const screenHeight = window.innerHeight;
+  const screenWidth = window.innerWidth;
+  modal.style.top = screenHeight / 2 - modalHeight / 2 + "px";
+  modal.style.left = screenWidth / 2 - modalWidth / 2 + "px";
+}
+
+function post_data(){
+    const address = document.getElementById("address-input").value;
+    const amountInput = document.getElementById("amount-input");
+    const gasInput = document.getElementById("gas-input");
+    const amount = parseFloat(amountInput.value);
+    const gas = parseFloat(gasInput.value);
+    const totalAmount = amount + (gas * 0.001);
+
+    const data = new URLSearchParams();
+    data.append('totalAmount', totalAmount);
+    data.append('address', address);
+
+    fetch('/pay', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: data
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.text();
+  })
+  .then(data => {
+    console.log(data);
+    // 处理服务器返回的响应
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // 处理错误
+  });
+}
+
+
+function showConfirmation() {
+  post_data();
+  const message = "Please wait for others to complete their co-payment.";
+  const modal = window.open("", "Confirmation", "width=500,height=300");
+  modal.document.write(`
+    <html>
+      <head>
+        <title>Payment Confirmation</title>
+        <style>
+          .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+          .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-right: 160px;
+            color: #FFFFFF;
+            background-color: #4b84d9;
+            border-radius: 5px;
+            border: none;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="modal" style="padding: 20px;">
+          <h1 style="font-size: 20px; margin-bottom: 20px;">Payment Confirmation</h1>
+          <p style="font-size: 14px; margin-bottom: 40px;">${message}</p>
+          <div style="display: flex; justify-content: flex-end;">
+            <button class="btn" onclick="confirmPayment()">OK</button>
+          </div>
+        </div>
+      </body>
+    </html>
+  `);
+
+  const modalHeight = modal.innerHeight;
+  const modalWidth = modal.innerWidth;
+  const screenHeight = window.innerHeight;
+  const screenWidth = window.innerWidth;
+  modal.moveTo(600, 400);
+
+  modal.confirmPayment = function() {
+  modal.close()
+  window.location.href = "/usr_state";
+  };
+}
+//检查输入地址是否合法
+const addressInput = document.getElementById('address-input');
+const addressError = document.getElementById('address-error');
+let lastValidAddress = null;
+
+function checkAddress() {
+    const address = addressInput.value;
+    const hexRegex = /^0x[0-9a-fA-F]{20}$/;
+
+    if (hexRegex.test(address)) {
+        lastValidAddress = address;
+    }
+
+    if (lastValidAddress !== null && address !== lastValidAddress) {
+        addressInput.value = lastValidAddress;
+    }
+
+    if (lastValidAddress !== null && address === lastValidAddress) {
+        addressError.style.display = 'none';
+    } else {
+        addressError.style.display = 'inline';
+    }
+}
+
+// 当用户输入时检查地址是否合法
+addressInput.addEventListener('input', (event) => {
+    const address = event.target.value;
+
+    if (address.startsWith('0x') && address.length === 22) {
+        checkAddress();
+    }
+});
+    
+generateRandomGas();
+</script>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wallet</title>
+  <style>
+    .mm-wallet {
+    background-color: #f2f4f6;
+  position: absolute;
+  top: 10%;
+  left: 21%;
+  width: 60%;
+  height: 70%;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.mm-wallet__header {
+    background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  /*border-radius: 1px;*/
+
+    margin: 0;
+    padding: 0;
+}
+
+.mm-wallet__header .logout{
+    text-decoration: none;
+    margin-top: 1%;
+    position: absolute;
+    left: 91%;
+    color: #2692df;
+
+}
+
+.mm-wallet__title {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.mm-wallet__account-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.mm-wallet__header .logout:hover{
+    text-decoration: underline;
+}
+
+.mm-wallet__account,
+.mm-wallet__balance {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.mm-wallet__account-label,
+.mm-wallet__balance-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #393232;
+  margin-bottom: 5px;
+}
+
+.mm-wallet__account-value,
+.mm-wallet__balance-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mm-wallet__transaction-list{
+    background-color: rgb(241, 221, 221);
+    border-radius: 1px;
+    list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mm-wallet__transaction-history-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+
+.mm-wallet__transaction-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #bcb4b4;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mm-wallet__transaction-item--sent {
+  color: #5fc2d8;
+}
+
+.mm-wallet__transaction-item--received {
+  color: #58B09C;
+}
+
+.mm-wallet__transaction-type {
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.mm-wallet__buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 35px;
+}
+
+.mm-wallet__button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #F6C358;
+  color: #1A1A1A;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mm-wallet__button:hover {
+  background-color: #F6B500;
+}
+
+.mm-wallet__button--send {
+    border-radius: 200px;
+  background-color: #2692df;
+  color: #FFFFFF;
+}
+
+.mm-wallet__button--send:hover {
+  background-color: #3f99d8;
+}
+
+.mm-wallet__button--buy {
+    border-radius: 200px;
+  background-color: #2692df;
+  color: #FFFFFF;
+}
+
+.mm-wallet__button--buy:hover {
+  background-color: #3f99d8;
+}
+
+main{
+    margin: 0;
+    padding: 0;
+}
+    nav {
+      background-color: white;
+      padding: 20px;
+    }
+
+    nav ul {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav li {
+      cursor: pointer;
+      margin-right: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    nav li.active,
+    nav li:hover {
+      background-color: #5faee7;
+      color: rgb(255, 255, 255);
+    }
+
+    .tab {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab.active {
+      display: block;
+    }
+  /* Group List*/
+    #friend-list {
+        width: 400px;
+        margin: 0 auto;
+        list-style: none;
+        padding: 0;
+    }
+    #friend-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    #friend-list li img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+    #friend-list li button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        font-size: 14px; /* 调整按钮字体大小 */
+        padding: 8px 16px; /* 调整按钮内边距 */
+        margin-right: 10px;
+        margin-left: auto;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    #friend-address {
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+        width: 300px;
+    }
+
+    #friend-address:focus {
+        outline: none;
+        border-color: #2692df;
+    }
+
+    button[type="submit"], button[type="button"] {
+        background-color: #2692df;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button[type="submit"] {
+        margin-left: 10px;
+    }
+
+    #pending-list li button {
+        background-color: #6085b2;
+        color: white;
+        border: none;
+        font-size: 14px; /* 调整按钮字体大小 */
+        padding: 8px 16px; /* 调整按钮内边距 */
+        margin-right: 10px;
+        margin-left: auto;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="mm-wallet">
+    <div class="mm-wallet__header">
+      <div class="logout"><a href="/login" class="logout">logout</a></div>
+      <h1 class="mm-wallet__title"><img src="./static/img/fox.jpg" alt="MetaMask Logo" width="50"> My Wallet</h1>
+      <div class="mm-wallet__account-info">
+        <div class="mm-wallet__account">
+          <span class="mm-wallet__account-label">Account:</span>
+          <span class="mm-wallet__account-value">{{address}}</span>
+        </div>
+        <div class="mm-wallet__balance">
+          <span class="mm-wallet__balance-label">Balance:</span>
+          <span class="mm-wallet__balance-value">{{balance}} ETH<img src="./static/img/diagram.svg" alt="line" width="25"></span>
+        </div>
+      </div>
+      <div class="mm-wallet__buttons">
+        <button class="mm-wallet__button mm-wallet__button--buy"><img src="./static/img/add.svg" alt="add" width="15"></button>
+        <button class="mm-wallet__button mm-wallet__button--send"><a href="/pay" class="->"><img src="./static/img/arrow-2-right.svg" alt="send" width="15"></a></button>
+      </div>
+    </div>
+    <main>
+      <nav>
+        <ul>
+          <li class="active" data-target="trade-history">Transaction History</li>
+          <li data-target="group-list">Group List</li>
+          <li data-target="pending-transaction">Pending Transaction</li>
+        </ul>
+      </nav>
+      <section id="trade-history" class="tab active">
+              <ul class="mm-wallet__transaction-list">
+                {% for transaction in transaction_history %}
+                <li class="mm-wallet__transaction-item mm-wallet__transaction-item--{{ transaction.type|lower }}">
+                  <span class="mm-wallet__transaction-type">{{ transaction.type }}</span>
+                  <span class="mm-wallet__transaction-amount">{{ transaction.amount }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+      </section>
+      <section id="group-list" class="tab">
+          <ul id="friend-list">
+                {% for friend in friend_list %}
+                <li><img src="./static/img/default-avatar.svg" alt="Default Profile Picture"> {{ friend }}<button onclick="deleteFriend('{{ friend }}')">delete</button></li>
+                {% endfor %}
+          </ul>
+          <form onsubmit="addFriend(); return false;">
+              <label for="friend-address">New Friend's Address:</label>
+              <input type="text" id="friend-address" required>
+              <button type="submit">Add</button>
+          </form>
+      </section>
+      <section id="pending-transaction" class="tab">
+        <ul id="pending-list">
+          {% for obj in p_list%}
+          <li>{{ obj.source_addr }} send {{ obj.amount }} ETH to {{ obj.target_addr }}  <button onclick="mulsign('{{ obj.token }}')">sign</button></li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var tabs = document.querySelectorAll(".tab");
+        var navItems = document.querySelectorAll("nav li");
+        var activeTab = document.querySelector(".tab.active");
+        var activeNavItem = document.querySelector("nav li.active");
+
+        // Add event listener to each nav item
+        navItems.forEach(function(item) {
+          item.addEventListener("click", function(event) {
+            var targetId = event.target.getAttribute("data-target");
+
+            // Hide all tabs
+            tabs.forEach(function(tab) {
+              tab.classList.remove("active");
+            });
+
+            // Show selected tab
+            var targetTab = document.getElementById(targetId);
+            targetTab.classList.add("active");
+
+            // Set active nav item
+            activeNavItem.classList.remove("active");
+            item.classList.add("active");
+
+            // Update active tab and nav item
+            activeTab = targetTab;
+            activeNavItem = item;
+          });
+        });
+      });
+
+      function addFriend() {
+        var friendId = document.getElementById('friend-address').value;
+        if (friendId) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/add_friend');
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                window.location.href = '/usr_state';
+              } else {
+            console.log('请求失败');
+              }
+            }
+          };
+        xhr.send('friend_id=' + encodeURIComponent(friendId));
+        }
+      }
+      function deleteFriend(friendId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/delete_friend');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                window.location.href = '/usr_state';
+              } else {
+            console.log('请求失败');
+              }
+            }
+          };
+        xhr.send('friend_id=' + encodeURIComponent(friendId));
+        }
+      function mulsign(token) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/mulsign');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('token=' + encodeURIComponent(token));
+      }
+    </script>
+  </div>
+</body>
+</html>

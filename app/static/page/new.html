@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome!</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body {
+	margin: 0;
+	padding: 0;
+	background-color: #f8f8f8;
+}
+
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.header img {
+	height: 40px;
+	margin-right: 10px;
+}
+
+.header h1 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.welcome {
+	margin-top: 70px;
+	text-align: center;
+}
+
+.welcome h2 {
+	font-size: 36px;
+	font-weight: bold;
+	color: #0077ff;
+	margin-bottom: 20px;
+}
+
+.welcome .intro {
+    position: relative;
+    left: 15%;
+	font-size: 20px;
+	color: #333;
+	margin-bottom: 50px;
+	line-height: 1.5;
+    width: 70%;
+}
+
+.welcome button {
+	padding: 13px 29px;
+	font-size: 17px;
+	font-weight: bold;
+	color: #fff;
+	background-color: #527fb5;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease-in-out;
+}
+
+.welcome button a{
+	text-decoration: none;
+	color: #fff;;
+}
+
+.welcome button:hover {
+	background-color: #3c71cd;
+	box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.features {
+	margin-top: 50px;
+	position: relative;
+}
+
+.features h2 {
+	font-size: 28px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+.features-container {
+    position: relative;
+    left: 19%;
+    width: 65%;
+    height: 10%;
+	overflow-x: hidden;
+}
+
+.features ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: nowrap;
+	transition: transform 0.3s ease-in-out;
+}
+
+.features li {
+	flex: 1 0 100%;
+	margin-right: 20px;
+	padding: 40px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.features li:last-child {
+	margin-right: 0;
+}
+
+.features li img {
+	height: 50px;
+	margin-bottom: 20px;
+}
+
+.features li h3 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.features li p {
+    width: 80%;
+	font-size: 20px;
+	color: #666;
+	line-height: 1.5;
+}
+
+.cta {
+	margin-top: 30px;
+	text-align: center;
+}
+
+.cta h2 {
+	font-size: 25px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.cta p {
+	font-size: 20px;
+	color: #333;
+	margin-bottom: 30px;
+	line-height: 1.5;
+}
+
+.cta button {
+	padding: 10px 55px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #2d5e9e;
+	background-color: #f7fafd;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease-in-out;
+}
+
+.cta button:hover {
+	background-color: #c6cad1;
+	box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.prev,
+.next {
+	position: absolute;
+	top: 23%;
+	transform: translateY(-50%);
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0);
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.prev img,
+.next img {
+	height: 20px;
+}
+
+.prev {
+	left: 13%;
+}
+
+.next {
+	right: 10%;
+}
+	</style>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+	var containerWidth = $(".container").width();
+	var featureWidth = $(".features li").outerWidth(true);
+	var featuresCount = $(".features li").length;
+	var featuresWidth = featureWidth * featuresCount;
+	var featuresContainerWidth = containerWidth - 40;
+	var featuresStart = 0;
+	var featuresEnd = featuresContainerWidth - featureWidth;
+
+	$(".next").click(function() {
+		if (featuresEnd < featuresWidth) {
+			featuresStart += featureWidth;
+			featuresEnd += featureWidth;
+			$(".features ul").css("transform", "translateX(-" + featuresStart + "px)");
+		}
+	});
+
+	$(".prev").click(function() {
+		if (featuresStart > 0) {
+			featuresStart -= featureWidth;
+			featuresEnd -= featureWidth;
+			$(".features ul").css("transform", "translateX(-" + featuresStart + "px)");
+		}
+	});
+});
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<img src="./static/img/fox.jpg" alt="Logo">
+			<h1>MuLPay</h1>
+		</div>
+		<div class="welcome">
+			<h2>Welcome 2 MuLPay!</h2>
+			<p class="intro">Trusted by millions, MuLPay is a secure wallet making the world of web3 accessible to all. Creat a new wallet!</p>
+			<button><a href="/register">Create a new wallet!</a></button>
+		</div>
+        <div class="cta">
+			<button>Import wallet</button>
+		</div>
+		<div class="features">
+			<h2>Our feature</h2>
+			<div class="features-container">
+				<ul>
+					<li class="animate__animated animate__fadeInLeft">
+						<img src="./static/img/ms.svg" alt="Feature Icon">
+						<h3>Multiple signature</h3>
+						<p>Multiple signatures protect multiple interests</p>
+					</li>
+					<li class="animate__animated animate__fadeInUp">
+						<img src="./static/img/ps.svg" alt="Feature Icon">
+						<h3>Protected account balance</h3>
+						<p>Use multiple signatures to recover property when a wallet is lost</p>
+					</li>
+					<li class="animate__animated animate__fadeInRight">
+						<img src="./static/img/eu.svg" alt="Feature Icon">
+						<h3>simple and easy to use</h3>
+						<p>Allowing you to easily manage your digital assets without any expertise.</p>
+					</li>
+				</ul>
+			</div>
+			<button class="prev"><img src="./static/img/right.svg" alt="Previous"></button>
+			<button class="next"><img src="./static/img/left.svg" alt="Next"></button>
+		</div>
+	</div>
+</body>
+</html>

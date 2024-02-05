@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forget?</title>
+  <style>
+    .container {
+        background-color: white;
+  width: 90%;
+  height: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #6e2222;
+  border-radius: 5px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  display: block;
+  width: 30%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #757070;
+  outline: none;
+  font-size: 18px;
+  padding: 5px 0;
+  transition: box-shadow 0.5s ease-in-out;
+}
+
+.form-control:focus{
+    box-shadow: 0 1px 0 0 #1576bb;
+    border-bottom: none;
+}
+
+.form-control2{
+  display: block;
+  width: 70%;
+  height: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #878383;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0062cc;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.container .Back{
+    text-decoration: none;
+    color: #b1a9a9;
+}
+
+.container .Back:focus{
+    color: #0062cc;
+}
+
+.container .Back:hover {
+    text-decoration: underline; /* 鼠标悬停时添加下划线 */
+}
+
+.error{
+  position: relative;
+  top: 10px;
+  color: red;
+}
+
+  </style>
+</head>
+
+<div class="container">
+    <a href="/login" class="Back">< Back</a>
+    <h2>Reset Wallet</h2>
+    <p>MuLPay does not keep a copy of your password. If you are having problems unlocking your account and need to reset your wallet. You can do this by providing the mnemonic used to set up your wallet.
+
+        This will remove your current wallet and mnemonic from the device, as well as the list of accounts you have compiled. After resetting using the mnemonic, you will see a list of accounts (based on the mnemonic used to reset). This new list will automatically include accounts that have a balance. You can also re-add any other accounts using the ones you created previously. The custom accounts you import will need to be re-added, as will any custom tokens added to the account.
+    </p>
+    <p>Please ensure that you are using the correct tokens before proceeding. You will not be able to undo this action.</p>
+    <form method="post">
+      <div class="form-group">
+        <label for="mnemonic">mnemonic word</label>
+        <textarea class="form-control2" id="mnemonic" rows="3" placeholder="Please enter the mnemonics in order, separating each mnemonic with a space" name="word"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="new-password">New password</label>
+        <input type="password" class="form-control" id="new-password" placeholder="" name="pwd1">
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" class="form-control" id="confirm-password" placeholder="" name="pwd2">
+      </div>
+      <input type="submit" class="btn btn-primary" value="Recovery">
+      <div class="error" id="error-message">{{mes}}</div>
+    </form>
+</div>

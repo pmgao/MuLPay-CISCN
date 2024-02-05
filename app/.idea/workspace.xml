@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dacb526d-6f1e-4f43-8710-16e676df057a" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
+  </component>
+  <component name="ProjectId" id="2PY0EBDMKz2K0N0oCOh8jnWpMEe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="templates" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="templates" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/PycharmProjects/pythonProject" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/PycharmProjects/pythonProject/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.app" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dacb526d-6f1e-4f43-8710-16e676df057a" name="Changes" comment="" />
+      <created>1683618594300</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1683618594300</updated>
+      <workItem from="1684926867488" duration="22000" />
+      <workItem from="1684927496508" duration="14000" />
+      <workItem from="1684927521005" duration="8000" />
+      <workItem from="1684931562079" duration="4000" />
+      <workItem from="1686137614725" duration="43000" />
+      <workItem from="1686138046404" duration="25000" />
+      <workItem from="1686138167832" duration="204000" />
+      <workItem from="1686138386670" duration="1000" />
+      <workItem from="1686138398477" duration="1000" />
+      <workItem from="1686141550769" duration="99000" />
+      <workItem from="1686141661834" duration="1000" />
+      <workItem from="1686141674111" duration="105000" />
+      <workItem from="1686141881562" duration="1000" />
+      <workItem from="1686141957432" duration="32000" />
+      <workItem from="1686142154476" duration="54000" />
+      <workItem from="1686142220980" duration="6000" />
+      <workItem from="1686142448890" duration="51000" />
+      <workItem from="1686380290048" duration="12000" />
+      <workItem from="1691067884010" duration="214000" />
+      <workItem from="1691068165869" duration="15000" />
+      <workItem from="1691304735432" duration="2000" />
+      <workItem from="1691385651671" duration="6000" />
+      <workItem from="1691385759255" duration="18000" />
+      <workItem from="1691385870111" duration="474000" />
+      <workItem from="1691386366206" duration="1000" />
+      <workItem from="1691386388586" duration="5000" />
+      <workItem from="1691411479824" duration="24000" />
+      <workItem from="1691411562247" duration="91000" />
+      <workItem from="1691411924041" duration="13000" />
+      <workItem from="1691412219325" duration="34000" />
+      <workItem from="1691412337451" duration="25000" />
+      <workItem from="1691412681537" duration="2000" />
+      <workItem from="1691412970051" duration="29000" />
+      <workItem from="1691413517349" duration="14000" />
+      <workItem from="1691413791691" duration="25000" />
+      <workItem from="1691413878597" duration="10000" />
+      <workItem from="1691413966459" duration="34000" />
+      <workItem from="1691414029192" duration="3000" />
+      <workItem from="1691414058635" duration="77000" />
+      <workItem from="1691414161072" duration="10000" />
+      <workItem from="1691414201785" duration="11000" />
+      <workItem from="1691414286781" duration="43000" />
+      <workItem from="1691414390921" duration="48000" />
+      <workItem from="1691414551723" duration="13000" />
+      <workItem from="1691414621580" duration="48000" />
+      <workItem from="1691414796163" duration="42000" />
+      <workItem from="1691414881361" duration="11000" />
+      <workItem from="1691414934535" duration="28000" />
+      <workItem from="1691415006370" duration="4000" />
+      <workItem from="1691415153374" duration="28000" />
+      <workItem from="1691415233595" duration="12000" />
+      <workItem from="1691415306459" duration="62000" />
+      <workItem from="1691416293484" duration="2000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

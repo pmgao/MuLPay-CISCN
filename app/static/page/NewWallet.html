@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Password</title>
+    <style>
+        .container{
+            background-color: #f2f4f6;
+            position: absolute;
+            top: 18%;
+            left: 33%;
+            width: 30%;
+            height: 47%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5%;
+        }
+        /*body {*/
+        /*    background-color: #f1f1f1;*/
+        /*    font-family: Arial, Helvetica, sans-serif;*/
+        /*    font-size: 16px;*/
+        /*    margin: 0;*/
+        /*    padding: 0;*/
+        /*}*/
+        /*.container {*/
+        /*    background-color: #fff;*/
+        /*    border: 1px solid #ddd;*/
+        /*    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);*/
+        /*    padding: 30px;*/
+        /*    text-align: center;*/
+        /*    max-width: 600px;*/
+        /*    margin: auto;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*    height: 100vh;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        .container h1 {
+            margin-top: 0;
+            font-size: 30px;
+            margin-bottom: 40px;
+        }
+        .container p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        form {
+            /*display: flex;*/
+            /*flex-direction: column;*/
+            /*align-items: center;*/
+            /*width: 100%;*/
+            /*max-width: 400px;*/
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 0;
+
+        }
+        input[type="password"] {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 18px;
+            padding: 12px;
+            width: 60%;
+            margin-bottom: 30px;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .btn {
+            position: relative;
+            margin: 10px;
+            background-color: #0376c9;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            width: 50%;
+            max-width: 400px;
+            border-radius: 5px;
+            bottom: -10px;
+        }
+
+
+        .btn:hover {
+            background-color: #0792f5;
+        }
+        .error {
+            color: #ff0000;
+            font-size: 16px;
+            margin-top: 10px;
+            max-width: 400px;
+            width: 100%;
+            text-align: left;
+            padding-left: 40px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Create Password</h1>
+    <p>This password will unlock your MuLPay wallet only on this device. MuLPay can not recover this password.</p>
+    <form id="form-password">
+        <input type="password" id="password" name="password" placeholder="New password (8 characters min)">
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password">
+        <label><input type="checkbox" id="agree" name="agree" value="1">I agree to the terms and conditions</label>
+        <button type="submit" class="btn">Create a new wallet</button>
+        <div class="error" id="error-message"></div>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById('form-password');
+    const passwordField = document.getElementById('password');
+    const confirmField = document.getElementById('confirm-password');
+    const agreeField = document.getElementById('agree');
+    const errorField = document.getElementById('error-message');
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(passwordField.value.length < 8){
+            errorField.innerText = 'Password must be at least 8 characters long';
+        }else if(passwordField.value !== confirmField.value){
+            errorField.innerText = 'Password confirmation does not match';
+        }else if(!agreeField.checked){
+            errorField.innerText = 'Please accept the terms and conditions';
+        }else{
+            const formData = new FormData(form);
+            fetch('/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                window.location.href = '/show';
+            })
+            .catch(error => {
+                errorField.innerText = error.message;
+            });
+        }
+    });
+</script>
+</body>
+</html>
