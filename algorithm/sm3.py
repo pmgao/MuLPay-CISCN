@@ -1,142 +1,123 @@
 import binascii
 from math import ceil
 
-rotl = lambda x, n:((x << n) & 0xffffffff) | ((x >> (32 - n)) & 0xffffffff)
-bytes_to_list = lambda data: [i for i in data]
-
-IV = [
-    1937774191, 1226093241, 388252375, 3666478592,
-    2842636476, 372324522, 3817729613, 2969243214,
+INITIAL_VECTOR = [
+    0x7380166f, 0x4914b2b9, 0x172442d7, 0xda8a0600,
+    0xa96f30bc, 0x163138aa, 0xe38dee4d, 0xb0fb0e4e,
 ]
 
-T_j = [
-    2043430169, 2043430169, 2043430169, 2043430169, 2043430169, 2043430169,
-    2043430169, 2043430169, 2043430169, 2043430169, 2043430169, 2043430169,
-    2043430169, 2043430169, 2043430169, 2043430169, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042, 2055708042, 2055708042,
-    2055708042, 2055708042, 2055708042, 2055708042
-]
+CONSTANTS = [0x79cc4519] * 16 + [0x7a879d8a] * 48
 
-def sm3_ff_j(x, y, z, j):
-    if 0 <= j and j < 16:
-        ret = x ^ y ^ z
-    elif 16 <= j and j < 64:
-        ret = (x & y) | (x & z) | (y & z)
-    return ret
+def mixing_function_1(a, b, c, round_idx):
+    if round_idx < 16:
+        return a ^ b ^ c
+    return (a & b) | (a & c) | (b & c)
 
-def sm3_gg_j(x, y, z, j):
-    if 0 <= j and j < 16:
-        ret = x ^ y ^ z
-    elif 16 <= j and j < 64:
-        #ret = (X | Y) & ((2 ** 32 - 1 - X) | Z)
-        ret = (x & y) | ((~ x) & z)
-    return ret
+def mixing_function_2(e, f, g, round_idx):
+    if round_idx < 16:
+        return e ^ f ^ g
+    return (e & f) | (~e & g)
 
-def sm3_p_0(x):
-    return x ^ (rotl(x, 9 % 32)) ^ (rotl(x, 17 % 32))
+def transform_message_word(input_val):
+    rotated_9 = ((input_val << 9) & 0xffffffff) | ((input_val >> 23) & 0xffffffff)
+    rotated_17 = ((input_val << 17) & 0xffffffff) | ((input_val >> 15) & 0xffffffff)
+    return input_val ^ rotated_9 ^ rotated_17
 
-def sm3_p_1(x):
-    return x ^ (rotl(x, 15 % 32)) ^ (rotl(x, 23 % 32))
-
-def sm3_cf(v_i, b_i):
-    w = []
+def process_message_block(state_vector, message_block):
+    words = []
+    scaling = 0x1000000
+    
     for i in range(16):
-        weight = 0x1000000
-        data = 0
-        for k in range(i*4,(i+1)*4):
-            data = data + b_i[k]*weight
-            weight = int(weight/0x100)
-        w.append(data)
+        accumulated = 0
+        for k in range(i*4, (i+1)*4):
+            accumulated += message_block[k] * scaling
+            scaling //= 0x100
+        words.append(accumulated)
+        scaling = 0x1000000
 
     for j in range(16, 68):
-        w.append(0)
-        w[j] = sm3_p_1(w[j-16] ^ w[j-9] ^ (rotl(w[j-3], 15 % 32))) ^ (rotl(w[j-13], 7 % 32)) ^ w[j-6]
-        str1 = "%08x" % w[j]
-    w_1 = []
-    for j in range(0, 64):
-        w_1.append(0)
-        w_1[j] = w[j] ^ w[j+4]
-        str1 = "%08x" % w_1[j]
+        term_1 = words[j-16] ^ words[j-9]
+        
+        rotated_3 = ((words[j-3] << 15) & 0xffffffff) | ((words[j-3] >> 17) & 0xffffffff)
+        rotated_13 = ((words[j-13] << 7) & 0xffffffff) | ((words[j-13] >> 25) & 0xffffffff)
+        
+        base_val = term_1 ^ rotated_3
+        transformed = base_val ^ ((base_val << 15) & 0xffffffff | (base_val >> 17) & 0xffffffff) ^ \
+                     ((base_val << 23) & 0xffffffff | (base_val >> 9) & 0xffffffff)
+        
+        words.append(transformed ^ rotated_13 ^ words[j-6])
 
-    a, b, c, d, e, f, g, h = v_i
-
-    for j in range(0, 64):
-        ss_1 = rotl(
-            ((rotl(a, 12 % 32)) +
-            e +
-            (rotl(T_j[j], j % 32))) & 0xffffffff, 7 % 32
-        )
-        ss_2 = ss_1 ^ (rotl(a, 12 % 32))
-        tt_1 = (sm3_ff_j(a, b, c, j) + d + ss_2 + w_1[j]) & 0xffffffff
-        tt_2 = (sm3_gg_j(e, f, g, j) + h + ss_1 + w[j]) & 0xffffffff
+    expanded = [words[j] ^ words[j+4] for j in range(64)]
+    
+    a, b, c, d, e, f, g, h = state_vector
+    
+    for idx in range(64):
+        rotated_a = ((a << 12) & 0xffffffff) | ((a >> 20) & 0xffffffff)
+        rotated_constant = ((CONSTANTS[idx] << (idx % 32)) & 0xffffffff) | \
+                          ((CONSTANTS[idx] >> (32 - idx % 32)) & 0xffffffff)
+        
+        intermediate = (rotated_a + e + rotated_constant) & 0xffffffff
+        ss1 = ((intermediate << 7) & 0xffffffff) | ((intermediate >> 25) & 0xffffffff)
+        ss2 = ss1 ^ rotated_a
+        
+        tt1 = (mixing_function_1(a, b, c, idx) + d + ss2 + expanded[idx]) & 0xffffffff
+        tt2 = (mixing_function_2(e, f, g, idx) + h + ss1 + words[idx]) & 0xffffffff
+        
+        rotated_b = ((b << 9) & 0xffffffff) | ((b >> 23) & 0xffffffff)
+        rotated_f = ((f << 19) & 0xffffffff) | ((f >> 13) & 0xffffffff)
+        
         d = c
-        c = rotl(b, 9 % 32)
+        c = rotated_b
         b = a
-        a = tt_1
+        a = tt1
         h = g
-        g = rotl(f, 19 % 32)
+        g = rotated_f
         f = e
-        e = sm3_p_0(tt_2)
+        
+        transformed_tt2 = tt2 ^ ((tt2 << 9) & 0xffffffff | (tt2 >> 23) & 0xffffffff) ^ \
+                         ((tt2 << 17) & 0xffffffff | (tt2 >> 15) & 0xffffffff)
+        e = transformed_tt2
+        
+        a, b, c, d, e, f, g, h = map(lambda x: x & 0xFFFFFFFF, [a, b, c, d, e, f, g, h])
+    
+    result_state = [a, b, c, d, e, f, g, h]
+    return [result_state[i] ^ state_vector[i] for i in range(8)]
 
-        a, b, c, d, e, f, g, h = map(
-            lambda x:x & 0xFFFFFFFF ,[a, b, c, d, e, f, g, h])
+def sm3_hash(input_data):
+    data_length = len(input_data)
+    remainder = data_length % 64
+    message = input_data[:]
+    message.append(0x80)
+    
+    padding_length = 56 - remainder - 1 if remainder < 56 else 120 - remainder - 1
+    message.extend([0] * padding_length)
+    
+    bit_length = data_length * 8
+    length_bytes = []
+    for _ in range(8):
+        length_bytes.insert(0, bit_length & 0xFF)
+        bit_length >>= 8
+    
+    message.extend(length_bytes)
+    block_count = len(message) // 64
+    
+    blocks = [message[i:i+64] for i in range(0, len(message), 64)]
+    current_state = INITIAL_VECTOR
+    
+    for block in blocks:
+        current_state = process_message_block(current_state, block)
+    
+    return ''.join(f'{x:08x}' for x in current_state)
 
-    v_j = [a, b, c, d, e, f, g, h]
-    return [v_j[i] ^ v_i[i] for i in range(8)]
-
-def sm3_hash(msg):
-    # print(msg)
-    len1 = len(msg)
-    reserve1 = len1 % 64
-    msg.append(0x80)
-    reserve1 = reserve1 + 1
-    # 56-64, add 64 byte
-    range_end = 56
-    if reserve1 > range_end:
-        range_end = range_end + 64
-
-    for i in range(reserve1, range_end):
-        msg.append(0x00)
-
-    bit_length = (len1) * 8
-    bit_length_str = [bit_length % 0x100]
-    for i in range(7):
-        bit_length = int(bit_length / 0x100)
-        bit_length_str.append(bit_length % 0x100)
-    for i in range(8):
-        msg.append(bit_length_str[7-i])
-
-    group_count = round(len(msg) / 64)
-
-    B = []
-    for i in range(0, group_count):
-        B.append(msg[i*64:(i+1)*64])
-
-    V = []
-    V.append(IV)
-    for i in range(0, group_count):
-        V.append(sm3_cf(V[i], B[i]))
-
-    y = V[i+1]
-    result = ""
-    for i in y:
-        result = '%s%08x' % (result, i)
-    return result
-
-def sm3_kdf(z, klen): # z为16进制表示的比特串（str），klen为密钥长度（单位byte）
-    klen = int(klen)
-    ct = 0x00000001
-    rcnt = ceil(klen/32)
-    zin = [i for i in bytes.fromhex(z.decode('utf8'))]
-    ha = ""
-    for i in range(rcnt):
-        msg = zin  + [i for i in binascii.a2b_hex(('%08x' % ct).encode('utf8'))]
-        ha = ha + sm3_hash(msg)
-        ct += 1
-    return ha[0: klen * 2]
+def sm3_kdf(input_str, key_length):
+    counter = 1
+    iterations = ceil(key_length/32)
+    input_bytes = [i for i in bytes.fromhex(input_str.decode('utf8'))]
+    accumulated = ""
+    
+    for _ in range(iterations):
+        counter_bytes = [i for i in binascii.a2b_hex(f'{counter:08x}'.encode('utf8'))]
+        accumulated += sm3_hash(input_bytes + counter_bytes)
+        counter += 1
+    
+    return accumulated[:key_length * 2]
