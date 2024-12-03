@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 
+// Device constant S-box for non-linear transformation in SM4 encryption on GPU
 __device__ __constant__ uint8_t d_Sbox[256] = {
 	0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
 	0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
@@ -26,6 +27,7 @@ __device__ __constant__ uint8_t d_Sbox[256] = {
 	0x18, 0xf0, 0x7d, 0xec, 0x3a, 0xdc, 0x4d, 0x20, 0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48
 };
 
+// Host-side S-box used for key expansion
 const uint8_t h_Sbox[256] = {
 	0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
 	0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
@@ -45,6 +47,7 @@ const uint8_t h_Sbox[256] = {
 	0x18, 0xf0, 0x7d, 0xec, 0x3a, 0xdc, 0x4d, 0x20, 0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48
 };
 
+// System parameters (CK) for SM4 algorithm
 const uint32_t ck[32] = {
 	0x00070e15, 0x1c232a31, 0x383f464d, 0x545b6269,
 	0x70777e85, 0x8c939aa1, 0xa8afb6bd, 0xc4cbd2d9,
@@ -55,9 +58,12 @@ const uint32_t ck[32] = {
 	0xa0a7aeb5, 0xbcc3cad1, 0xd8dfe6ed, 0xf4fb0209,
 	0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279 };
 
+// Basic bitwise operation macros
 #define Rotl(_x, _y) (((_x) << (_y)) | ((_x) >> (32 - (_y))))  
 #define L1(_B) ((_B) ^ Rotl(_B, 2) ^ Rotl(_B, 10) ^ Rotl(_B, 18) ^ Rotl(_B, 24))  
 #define L2(_B) ((_B) ^ Rotl(_B, 13) ^ Rotl(_B, 23))
+
+// Host-side S-box transformation macro
 #define h_S_box(_A) (h_Sbox[(_A) >> 24 & 0xFF] << 24 ^ \
 					h_Sbox[(_A) >> 16 & 0xFF] << 16 ^ \
 					h_Sbox[(_A) >>  8 & 0xFF] <<  8 ^ \
@@ -67,14 +73,18 @@ const uint32_t ck[32] = {
 					d_Sbox[(_A) >>  8 & 0xFF] <<  8 ^ \
 					d_Sbox[(_A) & 0xFF])  
 
+// Core encryption function running on GPU device
+// Processes a single 16-byte block using SM4 algorithm in CTR mode
 __device__ __inline__ void SM4Crypt(const uint8_t* input, uint8_t* output, uint32_t* rk, const uint8_t* plaintext) {
     uint32_t mid, x0, x1, x2, x3;
 
+	// Convert input bytes to 32-bit words with big-endian ordering
 	x0 = (input[3] << 24) | (input[2] << 16) | (input[1] << 8) | (input[0] << 0); 
 	x1 = (input[7] << 24) | (input[6] << 16) | (input[5] << 8) | (input[4] << 0); 
 	x2 = (input[11] << 24) | (input[10] << 16) | (input[9] << 8) | (input[8] << 0); 
 	x3 = (input[15] << 24) | (input[14] << 16) | (input[13] << 8) | (input[12] << 0); 
 
+	// 32 rounds of SM4 encryption
     #pragma unroll
     for (uint32_t r = 0; r < 32; r += 4) {
         mid = x1 ^ x2 ^ x3 ^ rk[r + 0];
@@ -91,6 +101,7 @@ __device__ __inline__ void SM4Crypt(const uint8_t* input, uint8_t* output, uint3
         x3 ^= L1(mid);
     }
 
+	// Convert 32-bit words back to bytes with reverse ordering for output
     output[0] = (x3 >> 24) & 0xFF;
     output[1] = (x3 >> 16) & 0xFF;
     output[2] = (x3 >> 8) & 0xFF;
@@ -111,17 +122,21 @@ __device__ __inline__ void SM4Crypt(const uint8_t* input, uint8_t* output, uint3
     output[14] = (x0 >> 8) & 0xFF;
     output[15] = (x0 >> 0) & 0xFF;
 
+	// XOR with plaintext for CTR mode operation
     #pragma unroll
     for (int i = 0; i < 16; i++) {
         output[i] ^= plaintext[i];
     }
 }
 
+// CUDA kernel for SM4 encryption in CTR mode
+// Processes multiple blocks in parallel
 __global__ void SM4_encrypt_cuda_ctr(uint8_t* p, uint8_t* c, uint32_t* rk, int num_cipher_blocks, uint8_t* counter) {
 	int i = (blockIdx.x * blockDim.x) + threadIdx.x;
 	if (i < num_cipher_blocks) {
 		uint8_t ca[16];
 
+		// Copy counter value and increment for this block
 		#pragma unroll
 		for (int w = 1; w < 16; w++) {
 			ca[w] = counter[w];
@@ -132,18 +147,24 @@ __global__ void SM4_encrypt_cuda_ctr(uint8_t* p, uint8_t* c, uint32_t* rk, int n
 	}
 }
 
+// Key expansion function for SM4
+// Generates round keys from the initial key
 void SM4KeyExt(uint8_t* Key, uint32_t* rk) {
 	uint32_t r, mid, x0, x1, x2, x3;
 
+	// Convert key bytes to 32-bit words
 	x0 = (Key[3] << 24) | (Key[2] << 16) | (Key[1] << 8) | (Key[0] << 0); 
 	x1 = (Key[7] << 24) | (Key[6] << 16) | (Key[5] << 8) | (Key[4] << 0); 
 	x2 = (Key[11] << 24) | (Key[10] << 16) | (Key[9] << 8) | (Key[8] << 0); 
 	x3 = (Key[15] << 24) | (Key[14] << 16) | (Key[13] << 8) | (Key[12] << 0); 
+
+	// XOR with system parameters
 	x0 ^= 0xa3b1bac6;
 	x1 ^= 0x56aa3350;
 	x2 ^= 0x677d9197;
 	x3 ^= 0xb27022dc;
 
+	// Generate 32 round keys
 	#pragma unroll
 	for (r = 0; r < 32; r += 4) {
 		mid = x1 ^ x2 ^ x3 ^ ck[r];
@@ -161,6 +182,8 @@ void SM4KeyExt(uint8_t* Key, uint32_t* rk) {
 	}
 }
 
+// Main CUDA wrapper function for SM4 encryption
+// Handles device memory allocation, data transfer, and kernel launch
 cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint8_t* Counter) {
 	cudaError_t cudaStatus;
 	uint8_t* p, * c, * counter;
@@ -171,13 +194,14 @@ cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint
 	int blocks, threads;
 	int n = size >> 4;
 
-	//select GPU to run on
+	// Select GPU device
 	cudaStatus = cudaSetDevice(0);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cuda SetDevice failed\n");
 		goto Error;
 	}
 
+	// Allocate device memory for counter, plaintext, ciphertext, and round keys
 	cudaStatus = cudaMalloc((void**)&counter, 16 * sizeof(uint8_t));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed\n");
@@ -199,6 +223,7 @@ cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint
 		goto Error;
 	}
 
+	// Copy data from host to device
 	cudaStatus = cudaMemcpy(counter, Counter, 16 * sizeof(uint8_t), cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed");
@@ -217,6 +242,7 @@ cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint
 		goto Error;
 	}
 
+	// Calculate grid and block dimensions for kernel launch
 	if (n > 1) {
 		threads = (n < prop.maxThreadsPerBlock) ? n : prop.maxThreadsPerBlock;
 		blocks = n / threads;
@@ -227,21 +253,25 @@ cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint
 	else {
 		threads = 1; blocks = 1;
 	}
-	cudaDeviceSynchronize();
+
+	// launch kernel
 	SM4_encrypt_cuda_ctr <<< blocks, threads >>> (p, c, rk, n, counter);
 
+	// Check for kernel launch errors
 	cudaStatus = cudaGetLastError();
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "Kernel launch failed:%s\n", cudaGetErrorString(cudaStatus));
 		goto Error;
 	}
 
+	// Wait for kernel completion
 	cudaStatus = cudaDeviceSynchronize();
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching kernel\n", cudaStatus);
 		goto Error;
 	}
 
+	// Copy results back to host
 	cudaStatus = cudaMemcpy(cipher, c, size * sizeof(uint8_t), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed\n");
@@ -250,6 +280,7 @@ cudaError_t SM4_cuda_ctr(char* text, char* cipher, int size, uint32_t* key, uint
 
 
 Error:
+// Free device memory
 	cudaFree(c);
 	cudaFree(p);
 	cudaFree(rk);
@@ -257,8 +288,10 @@ Error:
 }
 
 int main() {
+	// Initialize counter for CTR mode
 	uint8_t Counter[16] = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10 };
 
+	// Read encryption key from file
 	FILE* file_;
 	char* filename;
 	unsigned char key[16];
@@ -277,9 +310,11 @@ int main() {
 	}
 	fclose(file_);
 
+	// Generate round keys
 	uint32_t rk[32];
 	SM4KeyExt(key, rk);
 
+	// Read input file
 	std::ifstream inFILE("message.txt", std::ios::binary);
 	if (!inFILE) {
 		printf("Failed to open the file\n");
@@ -291,18 +326,22 @@ int main() {
 	int size = M-L;
 	inFILE.seekg(0, inFILE.beg);
 
+	// Add padding if necessary
 	int add;
 	add = (16 - size % 16) % 16;
 	char* p = (char*)calloc(size + add, sizeof(char));
 	memset(p, 0, size + add);
 	
+	// Read input data
 	inFILE.read(p, size);
 	inFILE.close();
 	size = size + add;
 	
+	// launch GPU
 	char* m = (char*)calloc(size, sizeof(char));
 	SM4_cuda_ctr(p, m, size, rk, Counter);
 
+	// Write output data
 	std::ofstream FILE("message.txt", std::ios::binary);
 	if (!FILE) {
 		printf("Failed to open the file\n");
@@ -311,6 +350,7 @@ int main() {
 	FILE.write(m, size);
 	FILE.close();
 
+	// free host memory
 	free(p);
 	free(m);
 	return 0;
