@@ -60,6 +60,6 @@ http://127.0.0.1:5000/
 
 ## Technical Details
 
-MuLPay has functions such as social recovery, joint payment and single-person management, and provides a complete front-end user interaction interface. The corresponding report PDF can be found at [Report](https://github.com/pmgao/MuLPay-CISCN/blob/main/Report.pdf).
+MuLPay has functions such as social recovery, joint payment, and single-person management, and provides a complete front-end user interface. The corresponding report PDF can be found at [Report](https://github.com/pmgao/MuLPay-CISCN/blob/main/Report.pdf).
 
-Collaborated with: Bing Wu (Shandong University), Rending Ouyang (Shandong University) and Yuxin Zhang (Shandong University).
+Collaborated with Bing Wu (Shandong University), Rending Ouyang (Shandong University), and Yuxin Zhang (Shandong University).
