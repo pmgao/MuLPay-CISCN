@@ -339,7 +339,11 @@ int main() {
 	
 	// launch GPU
 	char* m = (char*)calloc(size, sizeof(char));
-	SM4_cuda_ctr(p, m, size, rk, Counter);
+	cudaError_t cudaStatus = SM4_cuda_ctr(p, m, size, rk, Counter);
+	if (cudaStatus != cudaSuccess) {
+		printf("Failed to run on GPU\n");
+		exit(1);
+	}
 
 	// Write output data
 	std::ofstream FILE("message.txt", std::ios::binary);
