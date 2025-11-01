@@ -29,7 +29,7 @@ http://127.0.0.1:5000/
 
 MuLPay具备社交恢复、共同支付和单人管理等功能，且提供了完整的前端用户交互界面。对应报告PDF可见：[Report](https://github.com/pmgao/MuLPay-CISCN/blob/main/Report.pdf).
 
-合作者：吴兵（山东大学）、欧阳仁鼎（山东大学）、张雨欣（山东大学）。
+参与者：高培民（山东大学，香港理工大学），吴兵（山东大学，香港理工大学）、欧阳仁鼎（山东大学，浙江大学）、张雨欣（山东大学，上海交通大学）。
 
 ---------------------------------------------------------------------------------------------------------------------
 
@@ -62,4 +62,5 @@ http://127.0.0.1:5000/
 
 MuLPay has functions such as social recovery, joint payment, and single-person management, and provides a complete front-end user interface. The corresponding report PDF can be found at [Report](https://github.com/pmgao/MuLPay-CISCN/blob/main/Report.pdf).
 
-Collaborated with Bing Wu (Shandong University), Rending Ouyang (Shandong University), and Yuxin Zhang (Shandong University).
+Members: Peimin Gao (Shandong University, The HK PolyU), Bing Wu (Shandong University, The HK PolyU), Rending Ouyang (Shandong University, ZJU), and Yuxin Zhang (Shandong University, SJTU).
+
